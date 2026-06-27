@@ -1,21 +1,34 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+const config = require('./config/env');
+const corsOptions = require('./config/cors');
+const routes = require('./routes');
+const errorHandler = require('./middleware/errorHandler');
+const logger = require('./utils/logger');
 
-const authController = require('./controllers/authController');
-
+// ─── App Setup ───────────────────────────────────────────
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-app.post('/api/auth/login', authController.login);
-app.post('/api/auth/verify-2fa', authController.verify2FA);
+// ─── Global Middleware ───────────────────────────────────
+app.use(cors(corsOptions));
+app.use(express.json({ limit: '10kb' }));
 
-const PORT = process.env.PORT || 3001;
+// ─── Routes ──────────────────────────────────────────────
+app.use('/api', routes);
 
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`TwoFactor API running on http://localhost:${PORT}`);
+// ─── 404 Handler ─────────────────────────────────────────
+app.use((req, res) => {
+  res.status(404).json({ error: 'Ruta no encontrada' });
+});
+
+// ─── Global Error Handler ────────────────────────────────
+app.use(errorHandler);
+
+// ─── Start Server (solo en desarrollo) ───────────────────
+if (!config.isProduction) {
+  app.listen(config.port, () => {
+    logger.info('Server', `TwoFactor API running on http://localhost:${config.port}`);
+    logger.info('Server', `Environment: ${config.nodeEnv}`);
   });
 }
 
