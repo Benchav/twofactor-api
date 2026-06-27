@@ -31,7 +31,7 @@ function buildVerificationEmailHtml(code) {
 async function sendVerificationCode(email, code) {
   try {
     const { data, error } = await resend.emails.send({
-      from: 'Agro Control <onboarding@resend.dev>',
+      from: 'Agro Control <no-reply@nicapages.site>',
       to: [email],
       subject: 'Tu código de verificación de Agro Control',
       html: buildVerificationEmailHtml(code),
