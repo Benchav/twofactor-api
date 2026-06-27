@@ -8,16 +8,16 @@ function validateLogin(req, res, next) {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return next(new AppError('Email y contraseña son requeridos', 400));
+    return res.status(400).json({ error: 'Email y contraseña son requeridos' });
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    return next(new AppError('Formato de email inválido', 400));
+    return res.status(400).json({ error: 'Formato de email inválido' });
   }
 
   if (typeof password !== 'string' || password.length < 1) {
-    return next(new AppError('La contraseña no puede estar vacía', 400));
+    return res.status(400).json({ error: 'La contraseña no puede estar vacía' });
   }
 
   next();
@@ -31,16 +31,16 @@ function validateVerify2FA(req, res, next) {
   const { email, code } = req.body;
 
   if (!email || !code) {
-    return next(new AppError('Email y código son requeridos', 400));
+    return res.status(400).json({ error: 'Email y código son requeridos' });
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    return next(new AppError('Formato de email inválido', 400));
+    return res.status(400).json({ error: 'Formato de email inválido' });
   }
 
   if (typeof code !== 'string' || !/^\d{6}$/.test(code)) {
-    return next(new AppError('El código debe ser de 6 dígitos numéricos', 400));
+    return res.status(400).json({ error: 'El código debe ser de 6 dígitos numéricos' });
   }
 
   next();

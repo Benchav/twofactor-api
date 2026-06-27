@@ -14,6 +14,9 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '10kb' }));
 
 // ─── Routes ──────────────────────────────────────────────
+app.get('/', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'TwoFactor API is running' });
+});
 app.use('/api', routes);
 
 // ─── 404 Handler ─────────────────────────────────────────
