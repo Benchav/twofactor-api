@@ -46,4 +46,27 @@ function validateVerify2FA(req, res, next) {
   next();
 }
 
-module.exports = { validateLogin, validateVerify2FA };
+/**
+ * Valida el body del request de registro.
+ * Requiere: name, org, email, password.
+ */
+function validateRegister(req, res, next) {
+  const { name, org, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'Nombre, email y contraseña son requeridos' });
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Formato de email inválido' });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
+  }
+
+  next();
+}
+
+module.exports = { validateLogin, validateVerify2FA, validateRegister };

@@ -45,3 +45,23 @@ exports.verify2FA = (req, res, next) => {
     next(err);
   }
 };
+
+/**
+ * POST /api/auth/register
+ * Recibe datos del usuario, "registra" y genera código 2FA.
+ */
+exports.register = async (req, res, next) => {
+  try {
+    const { email, name, org, password } = req.body;
+
+    const code = authService.createVerificationCode(email);
+    await emailService.sendVerificationCode(email, code);
+
+    res.status(201).json({
+      success: true,
+      message: 'Cuenta creada. Código de verificación enviado al correo',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
